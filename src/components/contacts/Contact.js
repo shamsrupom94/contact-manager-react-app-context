@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
+import axios from "axios";
+import { Link } from "react-router-dom";
 import { Consumer } from "../../Contex";
 
 class Contact extends Component {
@@ -12,7 +13,9 @@ class Contact extends Component {
   };
 
   deleteClick = (id, dispatch) => {
-    dispatch({ type: "DELETE_CONTACT", payload: id });
+    axios
+      .delete(`https://jsonplaceholder.typicode.com/users/${id}`)
+      .then(response => dispatch({ type: "DELETE_CONTACT", payload: id }));
   };
 
   render() {
@@ -37,6 +40,7 @@ class Contact extends Component {
                     fontSize: "25px"
                   }}
                 />
+
                 <i
                   onClick={this.deleteClick.bind(this, id, dispatch)}
                   className="fas fa-trash-alt"
@@ -47,6 +51,18 @@ class Contact extends Component {
                     fontSize: "25px"
                   }}
                 />
+                <Link to={`contact/edit/${id}`}>
+                  <i
+                    className="fas fa-edit"
+                    style={{
+                      cursor: "pointer",
+                      color: "#0080FF",
+                      float: "right",
+                      fontSize: "25px",
+                      marginRight: "1rem"
+                    }}
+                  />
+                </Link>
               </h5>
 
               {toggleButton ? (

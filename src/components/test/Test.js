@@ -14,7 +14,7 @@ class Test extends Component {
   render() {
     const { title, body } = this.state;
     return (
-      <div>
+      <div className="jumbotron">
         <h2>{title}</h2>
         <p>{body}</p>
       </div>

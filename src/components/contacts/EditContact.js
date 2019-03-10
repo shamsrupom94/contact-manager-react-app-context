@@ -5,13 +5,29 @@ import TextGroup from "../assets/TextGroup";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-class AddContacts extends Component {
+class EditContacts extends Component {
   state = {
+    contact: {},
     name: "",
     email: "",
     phone: "",
     error: {}
   };
+
+  componentDidMount() {
+    const { id } = this.props.match.params;
+    axios
+      .get(`https://jsonplaceholder.typicode.com/users/${id}`)
+      .then(response => {
+        const contact = response.data;
+        this.setState({
+          name: contact.name,
+          email: contact.email,
+          phone: contact.phone
+        });
+      });
+  }
+
   onChange = e => {
     this.setState({
       [e.target.name]: e.target.value
@@ -35,17 +51,18 @@ class AddContacts extends Component {
       this.setState({ error: { phone: "Phone no. is required" } });
       return;
     }
-
-    const newContact = {
-      name: name,
-      email: email,
-      phone: phone
+    const updatedContact = {
+      name,
+      email,
+      phone
     };
 
+    const { id } = this.props.match.params;
+
     axios
-      .post("https://jsonplaceholder.typicode.com/users", newContact)
+      .put(`https://jsonplaceholder.typicode.com/users/${id}`, updatedContact)
       .then(response =>
-        dispatch({ type: "ADD_CONTACT", payload: response.data })
+        dispatch({ type: "UPDATE_CONTACT", payload: response.data })
       );
 
     //Clear State
@@ -69,10 +86,10 @@ class AddContacts extends Component {
             <React.Fragment>
               <h2 className="display-4 mb-3">
                 <i
-                  className="fas fa-address-card"
+                  className="fas fa-user-edit"
                   style={{ color: "#0080FF", fontSize: "50px" }}
                 />
-                <span className="text-primary"> Add</span> New Contact
+                Edit <span className="text-primary">{name}'s </span> Contact
               </h2>
               <div className="card mb-3">
                 <div className="card-body">
@@ -107,7 +124,7 @@ class AddContacts extends Component {
                       value="Add Contact"
                       className="btn btn-primary float-right"
                     >
-                      <i className="fas fa-address-book" /> Add Contact
+                      <i className="fas fa-user-edit" /> Update Contact
                     </button>
                     <Link to="/">
                       <button className="btn btn-danger float-left">
@@ -124,4 +141,4 @@ class AddContacts extends Component {
     );
   }
 }
-export default AddContacts;
+export default EditContacts;
